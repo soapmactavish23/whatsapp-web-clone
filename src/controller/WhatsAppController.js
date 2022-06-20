@@ -1,4 +1,6 @@
-class WhatsAppController {
+import { Format } from "../util/Format";
+import { CameraController } from "./CameraController";
+export class WhatsAppController {
 
     constructor() {
 
@@ -182,7 +184,7 @@ class WhatsAppController {
             this.el.panelCamera.css({
                 'height': 'calc(100% - 120px)'
             });
-            
+
             this._camera = new CameraController(this.el.videoCamera);
         });
 
@@ -289,7 +291,7 @@ class WhatsAppController {
 
                 let frag = document.createDocumentFragment();
                 frag.appendChild(img);
-                
+
                 range.insertNode(frag);
                 range.setStartAfter(img);
 
