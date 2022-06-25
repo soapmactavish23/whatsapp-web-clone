@@ -7,11 +7,30 @@ export class WhatsAppController {
 
     constructor() {
 
+
         this.elementsPrototype();
         this.loadElements();
         this.initElements();
 
         this._firebase = new Firebase();
+
+        this.initAuth();
+
+    }
+
+    initAuth() {
+
+        this._firebase.initAuth().then((response) => {
+
+            this._iuser = response.user;
+
+            this.el.appContent.css({
+                display: 'flex',
+            });
+
+        }).catch(err => {
+            console.error(err);
+        });
 
     }
 

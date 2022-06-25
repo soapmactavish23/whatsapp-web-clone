@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
+import { signInWithPopup, GoogleAuthProvider, getAuth } from "firebase/auth";
 
 export class Firebase {
 
@@ -40,6 +41,26 @@ export class Firebase {
 
         return getStorage();
 
+    }
+
+    initAuth() {
+        return new Promise(function (s, f) {
+
+            let provider = new GoogleAuthProvider();
+
+
+
+            signInWithPopup(getAuth(), provider).then((result) => {
+
+                let token = result.user.access_token;
+                let user = result.user;
+
+                s({ user, token });
+
+            }).catch(err => {
+                f("error: " + err);
+            })
+        })
     }
 
 }
