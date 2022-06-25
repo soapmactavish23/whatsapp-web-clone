@@ -20,20 +20,20 @@ export class Firebase {
     }
 
     init() {
-        if (!this._initialized) {
+        if (!window._initializedFirebase) {
             this.firebase = initializeApp(this._config);
 
             // this.firebase.firestore().settings({
             //     timestampsInSnapshot: true,
             // });
 
-            this._initialized = true;
+            window._initializedFirebase = true;
         }
     }
 
     static db() {
 
-        return getFirestore();
+        return getFirestore(this.firebase);
 
     }
 
@@ -47,8 +47,6 @@ export class Firebase {
         return new Promise(function (s, f) {
 
             let provider = new GoogleAuthProvider();
-
-
 
             signInWithPopup(getAuth(), provider).then((result) => {
 
