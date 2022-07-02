@@ -1,7 +1,6 @@
 import { Firebase } from "../util/Firebase";
-import { getDoc, collection, setDoc, doc } from "firebase/firestore";
+import { getDoc, collection, setDoc, doc, onSnapshot } from "firebase/firestore";
 import { Model } from "./Model";
-import { f } from "pdfjs-dist";
 
 export class User extends Model {
 
@@ -20,11 +19,11 @@ export class User extends Model {
     get photo() { return this._data.photo; }
     set photo(value) { this._data.photo = value; }
 
-    async getById(id) {
+    getById(id) {
         const docRef = doc(Firebase.db(), '/users', id);
-        const docSnap = await getDoc(docRef)
-
-        this.fromJSON(docSnap.data());
+        onSnapshot(docRef, (doc) => {
+            this.fromJSON(doc.data());
+        });
     }
 
     save() {
