@@ -51,16 +51,41 @@ export class User extends Model {
         });
     }
 
+    static getContactsRef(id) {
+        return doc(User.getRef(this.email), 'contacts', btoa(id));
+    }
+
     addContact(contact) {
-        // User.getRef().doc(this.email).collection('contacts').doc(btoa(contact.email));
         return new Promise((resolve, reject) => {
-            const ref = doc(User.getRef(this.email), 'contacts', btoa(contact.email))
+            const ref = User.getContactsRef(contact.email);
             setDoc(ref, contact.toJSON()).then((result) => {
                 resolve(result);
             }).catch((err) => {
                 reject(err);
             });
         })
+    }
+
+    getContacts() {
+        return new Promise((resolve, reject) => {
+            onSnapshot(collection(User.getRef(this.email), 'contacts'), (docs) => {
+                let contacts = [];
+
+                docs.forEach(doc => {
+                    let data = doc.data();
+
+                    data.id = doc.id;
+
+                    contacts.push(data);
+
+                });
+
+                this.trigger('contactschange', docs);
+
+                resolve(contacts);
+
+            });
+        });
     }
 
 }
