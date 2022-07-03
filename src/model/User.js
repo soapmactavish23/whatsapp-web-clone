@@ -1,5 +1,5 @@
 import { Firebase } from "../util/Firebase";
-import { getDoc, collection, setDoc, doc, onSnapshot } from "firebase/firestore";
+import { getDoc, collection, setDoc, doc, onSnapshot, Firestore } from "firebase/firestore";
 import { Model } from "./Model";
 
 export class User extends Model {
@@ -28,7 +28,7 @@ export class User extends Model {
 
     save() {
         return new Promise((resolve, reject) => {
-            const ref = doc(Firebase.db(), 'users', this.email);
+            const ref = User.getRef(this.email);
 
             setDoc(ref, this.toJSON()).then((result) => {
                 resolve(result);
@@ -38,8 +38,8 @@ export class User extends Model {
         })
     }
 
-    static getRef() {
-        return collection(Firebase.db(), '/users',);
+    static getRef(email) {
+        return doc(Firebase.db(), 'users', email);
     }
 
     static findByEmail(email) {
@@ -49,6 +49,18 @@ export class User extends Model {
                 s(docSnap);
             }).catch(err => f(err));
         });
+    }
+
+    addContact(contact) {
+        // User.getRef().doc(this.email).collection('contacts').doc(btoa(contact.email));
+        return new Promise((resolve, reject) => {
+            const ref = doc(User.getRef(this.email), 'contacts', btoa(contact.email))
+            setDoc(ref, contact.toJSON()).then((result) => {
+                resolve(result);
+            }).catch((err) => {
+                reject(err);
+            });
+        })
     }
 
 }
