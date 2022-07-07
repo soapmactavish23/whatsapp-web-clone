@@ -4,6 +4,7 @@ import { MicrophoneController } from "./MicrophoneController";
 import { DocumentPreviewController } from "./DocumentPreviewController";
 import { Firebase } from "../util/Firebase";
 import { User } from "../model/User";
+import Chat from "../model/Chat";
 
 export class WhatsAppController {
 
@@ -125,7 +126,7 @@ export class WhatsAppController {
                             </div>
                         </div>`;
 
-                if(contact.photo) {
+                if (contact.photo) {
                     let img = div.querySelector('.photo');
                     img.src = contact.photo;
                     img.show();
@@ -135,7 +136,7 @@ export class WhatsAppController {
                     this.el.activeName.innerHTML = contact.name;
                     this.el.activeStatus.innerHTML = contact.status;
 
-                    if(contact.photo) {
+                    if (contact.photo) {
                         let img = this.el.activePhoto;
                         img.src = contact.photo;
                         img.show();
@@ -298,10 +299,21 @@ export class WhatsAppController {
 
             contact.on('datachange', data => {
                 if (data.name) {
-                    this._user.addContact(contact).then(() => {
-                        this.el.btnClosePanelAddContact.click();
-                        console.info('Contato foi adicionado');
-                    })
+
+                    Chat.createIfNotExists(this._user.email, contact.email).then(chat => {
+                        
+                        contact.id = chat.id;
+
+                        this._user.chatId = chat.id;
+
+                        contact.addContact(this._user.email);
+
+                        this._user.addContact(contact).then(() => {
+                            this.el.btnClosePanelAddContact.click();
+                            console.info('Contato foi adicionado');
+                        })
+                    });
+
                 } else {
                     console.error('Usuário não foi encontrado');
                 }
