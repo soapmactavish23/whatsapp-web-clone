@@ -28,7 +28,7 @@ export class WhatsAppController {
             this._user = new User(response.user.email);
 
             this._user.on('datachange', (data) => {
-                console.log(data.name);
+
                 document.querySelector('title').innerHTML = data.name + ' - WhatsApp Clone';
 
                 this.el.inputNamePanelEditProfile.innerHTML = data.name;
@@ -133,6 +133,8 @@ export class WhatsAppController {
                 }
 
                 div.on('click', e => {
+                    console.log('chatId', contact.chatId);
+
                     this.el.activeName.innerHTML = contact.name;
                     this.el.activeStatus.innerHTML = contact.status;
 
@@ -289,7 +291,7 @@ export class WhatsAppController {
             });
         });
 
-        this.el.formPanelAddContact.on('click', e => {
+        this.el.formPanelAddContact.on('submit', e => {
 
             e.preventDefault();
 
@@ -301,12 +303,12 @@ export class WhatsAppController {
                 if (data.name) {
 
                     Chat.createIfNotExists(this._user.email, contact.email).then(chat => {
-                        
+
                         contact.id = chat.id;
 
                         this._user.chatId = chat.id;
 
-                        contact.addContact(this._user.email);
+                        contact.addContact(this._user);
 
                         this._user.addContact(contact).then(() => {
                             this.el.btnClosePanelAddContact.click();
@@ -318,8 +320,6 @@ export class WhatsAppController {
                     console.error('Usuário não foi encontrado');
                 }
             });
-
-            this._user.addContact();
 
         });
 

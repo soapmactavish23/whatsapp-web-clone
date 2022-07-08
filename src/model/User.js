@@ -54,14 +54,13 @@ export class User extends Model {
         });
     }
 
-    static getContactsRef(id) {
-        return doc(User.getRef(this.email), 'contacts', btoa(id));
+    static getContactsRef(meEmail, contactEmail) {
+        return doc(User.getRef(meEmail), 'contacts', btoa(contactEmail));
     }
 
     addContact(contact) {
-        console.log(contact);
         return new Promise((resolve, reject) => {
-            const ref = User.getContactsRef(contact.email);
+            const ref = User.getContactsRef(this.email, contact.email);
             setDoc(ref, contact.toJSON()).then((result) => {
                 resolve(result);
             }).catch((err) => {
