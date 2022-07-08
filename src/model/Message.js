@@ -1,3 +1,5 @@
+import { addDoc, collection, doc } from "firebase/firestore";
+import { Firebase } from "../util/Firebase";
 import { Model } from "./Model";
 
 export class Message extends Model {
@@ -297,6 +299,22 @@ export class Message extends Model {
 
         return div;
 
+    }
+
+    static getRef(chatId) {
+        let chatRef = doc(Firebase.db(), "chats", chatId);
+        let messageRef = collection(chatRef, "messages");
+        return messageRef;
+    }
+
+    static send(chatId, from, type, content) {
+        addDoc(Message.getRef(chatId), {
+            content,
+            timestamp: Date.now(),
+            status: 'wait',
+            type,
+            from,
+        })
     }
 
 }
