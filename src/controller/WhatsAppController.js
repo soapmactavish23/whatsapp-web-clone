@@ -6,6 +6,7 @@ import { Firebase } from "../util/Firebase";
 import { User } from "../model/User";
 import Chat from "../model/Chat";
 import { Message } from "../model/Message";
+import { onSnapshot, orderBy, query } from "firebase/firestore";
 
 export class WhatsAppController {
 
@@ -149,6 +150,10 @@ export class WhatsAppController {
 
     setActiveChat(contact) {
 
+        if (this._contactActive) {
+            this._onSnapshotContact = onSnapshot(() => { });
+        }
+
         this._contactActive = contact;
 
         this.el.activeName.innerHTML = contact.name;
@@ -163,6 +168,34 @@ export class WhatsAppController {
         this.el.home.hide();
         this.el.main.css({
             display: 'flex'
+        });
+        const messageRef = Message.getRef(this._contactActive.chatId);
+        const q = query(messageRef, orderBy("timeStamp"));
+        this._onSnapshotContact = onSnapshot(q, (docs) => {
+
+            this.el.panelMessagesContainer.innerHTML = '';
+
+            docs.forEach(doc => {
+
+                let data = doc.data();
+
+                data.id = doc.id;
+
+                if (!this.el.panelMessagesContainer.querySelector('#' + data.id)) {
+
+                    let message = new Message();
+
+                    message.fromJSON(data);
+
+                    let me = (data.from === this._user.email);
+
+                    let view = message.getViewElement(me);
+
+                    this.el.panelMessagesContainer.appendChild(view);
+                }
+
+            });
+
         });
     }
 
