@@ -1,5 +1,5 @@
 import { Firebase } from "../util/Firebase";
-import { getDoc, collection, setDoc, doc, onSnapshot, Firestore } from "firebase/firestore";
+import { getDoc, collection, setDoc, doc, onSnapshot, Firestore, query, where } from "firebase/firestore";
 import { Model } from "./Model";
 
 export class User extends Model {
@@ -18,7 +18,7 @@ export class User extends Model {
 
     get photo() { return this._data.photo; }
     set photo(value) { this._data.photo = value; }
-    
+
     get chatId() { return this._data.chatId; }
     set chatId(value) { this._data.chatId = value; }
 
@@ -69,24 +69,24 @@ export class User extends Model {
         })
     }
 
-    getContacts() {
+    getContacts(filter = '') {
         return new Promise((resolve, reject) => {
-            onSnapshot(collection(User.getRef(this.email), 'contacts'), (docs) => {
+
+            const q = query(collection(User.getRef(this.email), 'contacts'), where("name", ">=", filter));
+            onSnapshot((q), (docs) => {
                 let contacts = [];
 
                 docs.forEach(doc => {
                     let data = doc.data();
 
                     data.id = doc.id;
-
                     contacts.push(data);
-
+                    
                 });
-
-                this.trigger('contactschange', docs);
-
-                resolve(contacts);
-
+                
+                resolve(docs);
+                this.trigger('contactschange', contacts);
+                
             });
         });
     }
