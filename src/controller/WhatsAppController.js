@@ -6,7 +6,7 @@ import { Firebase } from "../util/Firebase";
 import { User } from "../model/User";
 import Chat from "../model/Chat";
 import { Message } from "../model/Message";
-import { onSnapshot, orderBy, query } from "firebase/firestore";
+import { onSnapshot, orderBy, query, setDoc } from "firebase/firestore";
 
 export class WhatsAppController {
 
@@ -146,9 +146,9 @@ export class WhatsAppController {
 
     setActiveChat(contact) {
 
-        if (this._contactActive) {
-            this._onSnapshotContact = onSnapshot(() => { });
-        }
+        // if (this._contactActive) {
+        //     this._onSnapshotContact = onSnapshot(() => { });
+        // }
 
         this._contactActive = contact;
 
@@ -183,17 +183,29 @@ export class WhatsAppController {
 
                 data.id = doc.id;
 
+                let message = new Message();
+
+                message.fromJSON(data);
+                
+                let me = (data.from === this._user.email);
+
                 if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
 
-                    let message = new Message();
 
-                    message.fromJSON(data);
-
-                    let me = (data.from === this._user.email);
+                    if (!me) {
+                        
+                        setDoc(doc.ref, { status: 'read' }, { merge: true });
+                    }
 
                     let view = message.getViewElement(me);
 
                     this.el.panelMessagesContainer.appendChild(view);
+
+                } else if(me) {
+
+                    let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
+
+                    msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElement().outerHTML;
 
                 }
 
@@ -201,9 +213,6 @@ export class WhatsAppController {
 
             if (autoScroll) {
                 this.el.panelMessagesContainer.scrollTop = (this.el.panelMessagesContainer.scrollHeight - this.el.panelMessagesContainer.offsetHeight);
-
-                console.log(this.el.panelMessagesContainer.scrollHeight, this.el.panelMessagesContainer.offsetHeight);
-
             } else {
                 this.el.panelMessagesContainer.scrollTop = scrollTop;
             }
@@ -367,16 +376,16 @@ export class WhatsAppController {
 
                     Chat.createIfNotExists(this._user.email, contact.email).then(chat => {
 
-                        contact.id = chat.id;
+                        contact.chatId = chat.id;
 
                         this._user.chatId = chat.id;
-
-                        contact.addContact(this._user);
 
                         this._user.addContact(contact).then(() => {
                             this.el.btnClosePanelAddContact.click();
                             console.info('Contato foi adicionado');
                         })
+                        
+                        contact.addContact(this._user);
                     });
 
                 } else {
