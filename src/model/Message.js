@@ -99,11 +99,6 @@ export class Message extends Model {
                                 <div class="_1DZAH text-white" role="button">
                                     <span class="message-time">${Format.timeStampToTime(this.timeStamp)}</span>
                                     <div class="message-status">
-                                        <span data-icon="msg-check-light">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 15" width="16" height="15">
-                                                <path fill="#FFF" d="M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"></path>
-                                            </svg>
-                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -118,7 +113,7 @@ export class Message extends Model {
                         </span>
                     </div>
                 </div>`;
-                
+
 
                 div.querySelector('.message-photo').on('load', e => {
                     div.querySelector('.message-photo').show();
@@ -291,34 +286,38 @@ export class Message extends Model {
         return messageRef;
     }
 
-    static sendImage(chatId, from, file) {
-
+    static upload(from, file) {
         return new Promise((resolve, reject) => {
 
-            const storageRef = ref(Firebase.hd(), from);
+            const storageRef = ref(Firebase.hd(), Date.now() + '_' + from);
 
             const uploadTask = uploadBytesResumable(storageRef, file);
 
-            uploadTask.on('state_changed',
-                (e) => {
-                    console.info('upload', e);
-                },
-                (error) => {
-                    console.error('upload', error);
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        Message.send(chatId, from, "image", downloadURL).then(() => {
-                            resolve();
-                        });
-                    });
+            uploadTask.on('state_changed', snapshot => {
 
-                }
-            );
+                console.log('upload', snapshot);
+
+            }, err => {
+
+                reject(err);
+
+            }, success => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    resolve(downloadURL);
+                });
+            });
 
         })
+    }
 
-
+    static sendImage(chatId, from, file) {
+        return new Promise((resolve, reject) => {
+            Message.upload(from, file).then((downloadURL) => {
+                Message.send(chatId, from, "image", downloadURL).then(() => {
+                    resolve();
+                }).catch(err => reject(err));
+            }).catch(err => reject(err));
+        });
     }
 
     static send(chatId, from, type, content) {

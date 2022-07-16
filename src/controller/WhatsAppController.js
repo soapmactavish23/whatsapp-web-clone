@@ -172,10 +172,12 @@ export class WhatsAppController {
         const q = query(messageRef, orderBy("timeStamp"));
 
         this._onSnapshotContact = onSnapshot(q, (docs) => {
-
+            
             let scrollTop = this.el.panelMessagesContainer.scrollTop;
             let scrollTopMax = (this.el.panelMessagesContainer.scrollHeight - this.el.panelMessagesContainer.offsetHeight);
             let autoScroll = (scrollTop >= scrollTopMax);
+
+            this.el.panelMessagesContainer.innerHTML = '';
 
             docs.forEach(doc => {
 
@@ -190,8 +192,7 @@ export class WhatsAppController {
                 let me = (data.from === this._user.email);
 
                 if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
-
-
+                    
                     if (!me) {
 
                         setDoc(doc.ref, { status: 'read' }, { merge: true });
@@ -425,7 +426,6 @@ export class WhatsAppController {
         this.el.inputPhoto.on('change', e => {
             [...this.el.inputPhoto.files].forEach(file => {
                 Message.sendImage(this._contactActive.chatId, this._user.email, file);
-                Message.send(this._contactActive.chatId, this._user.email, 'image', '');
             });
         });
 
@@ -492,15 +492,13 @@ export class WhatsAppController {
                 context.scale(-1, 1);
 
                 context.drawImage(picture, 0, 0, canvas.width, canvas.height);
-
+                
                 fetch(canvas.toDataURL(mimeType))
                 .then(res => { return res.arrayBuffer(); })
                 .then(buffer => { return new File([buffer], filename, { type: mimeType }); })
                 .then(file => {
                     Message.sendImage(this._contactActive.chatId, this._user.email, file);
-
-                    this.el.btnSendPicture.disabled = false;
-
+                    
                     this.closeAllMainPanel();
                     this._camera.stop();
                     this.el.btnReshootPanelCamera.hide();
@@ -509,7 +507,8 @@ export class WhatsAppController {
                     this.el.containerSendPicture.hide();
                     this.el.containerTakePicture.show();
                     this.el.panelMessagesContainer.show();
-
+                    this.el.btnSendPicture.disabled = false;
+                    
                 })
             }
 
