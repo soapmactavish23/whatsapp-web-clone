@@ -8,6 +8,7 @@ import Chat from "../model/Chat";
 import { Message } from "../model/Message";
 import { onSnapshot, orderBy, query, setDoc } from "firebase/firestore";
 import { Base64 } from "../util/Base64";
+import { ContactsController } from "./ContactsController";
 
 export class WhatsAppController {
 
@@ -587,12 +588,24 @@ export class WhatsAppController {
 
         this.el.btnAttachContact.on('click', e => {
 
-            this.el.modalContacts.show();
+            this._contactsController = new ContactsController(this.el.modalContacts, this._user);
+
+            this._contactsController.on('select', contact => {
+
+                Message.sendContact(
+                    this._contactActive.chatId,
+                    this._user.email,
+                    contact
+                );
+
+            });
+
+            this._contactsController.open();
 
         });
 
         this.el.btnCloseModalContacts.on('click', e => {
-            this.el.modalContacts.hide();
+            this._contactsController.close();
         });
 
         this.el.btnSendMicrophone.on('click', e => {

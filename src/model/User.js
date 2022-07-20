@@ -84,7 +84,7 @@ export class User extends Model {
                     
                 });
                 
-                resolve(docs);
+                resolve(contacts);
                 this.trigger('contactschange', contacts);
                 
             });
