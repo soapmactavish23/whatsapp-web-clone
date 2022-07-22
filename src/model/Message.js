@@ -24,24 +24,30 @@ export class Message extends Model {
 
     get status() { return this._data.status; }
     set status(value) { this._data.status = value; }
-    
+
     get preview() { return this._data.preview; }
     set preview(value) { this._data.preview = value; }
-    
+
     get fileType() { return this._data.fileType; }
     set fileType(value) { this._data.fileType = value; }
-    
+
     get filename() { return this._data.filename; }
     set filename(value) { this._data.filename = value; }
-    
+
     get size() { return this._data.size; }
     set size(value) { this._data.size = value; }
-    
+
     get from() { return this._data.from; }
     set from(value) { this._data.from = value; }
-    
+
     get info() { return this._data.info; }
     set info(value) { this._data.info = value; }
+
+    get photo() { return this._data.photo; }
+    set photo(value) { this._data.photo = value; }
+
+    get duration() { return this._data.duration; }
+    set duration(value) { this._data.duration = value; }
 
     getViewElement(me = true) {
 
@@ -89,7 +95,7 @@ export class Message extends Model {
                     </div>
                 </div>`;
 
-                if(this.content.photo) {
+                if (this.content.photo) {
                     let img = div.querySelector('.photo-contact-sended');
                     img.src = this.content.photo;
                     img.show();
@@ -123,8 +129,7 @@ export class Message extends Model {
                             <div class="_2TvOE">
                                 <div class="_1DZAH text-white" role="button">
                                     <span class="message-time">${Format.timeStampToTime(this.timeStamp)}</span>
-                                    <div class="message-status">
-                                    </div>
+                                    <div class="message-status"></div>
                                 </div>
                             </div>
                         </div>
@@ -203,17 +208,17 @@ export class Message extends Model {
                             <div class="_2cfqh">
                                 <div class="_1QMEq _1kZiz fS1bA">
                                     <div class="E5U9C">
-                                        <svg class="_1UDDE" width="34" height="34" viewBox="0 0 43 43">
+                                        <svg class="_1UDDE audio-load" width="34" height="34" viewBox="0 0 43 43">
                                             <circle class="_3GbTq _37WZ9" cx="21.5" cy="21.5" r="20" fill="none" stroke-width="3"></circle>
                                         </svg>
-                                        <button class="_2pQE3" style="display:none">
+                                        <button class="_2pQE3 audio-play" style="display:none">
                                             <span data-icon="audio-play">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" width="34" height="34">
                                                     <path fill="#263238" fill-opacity=".5" d="M8.5 8.7c0-1.7 1.2-2.4 2.6-1.5l14.4 8.3c1.4.8 1.4 2.2 0 3l-14.4 8.3c-1.4.8-2.6.2-2.6-1.5V8.7z"></path>
                                                 </svg>
                                             </span>
                                         </button>
-                                        <button class="_2pQE3">
+                                        <button class="_2pQE3 audio-pause" style="display:none">
                                             <span data-icon="audio-pause">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" width="34" height="34">
                                                     <path fill="#263238" fill-opacity=".5" d="M9.2 25c0 .5.4 1 .9 1h3.6c.5 0 .9-.4.9-1V9c0-.5-.4-.9-.9-.9h-3.6c-.4-.1-.9.3-.9.9v16zm11-17c-.5 0-1 .4-1 .9V25c0 .5.4 1 1 1h3.6c.5 0 1-.4 1-1V9c0-.5-.4-.9-1-.9 0-.1-3.6-.1-3.6-.1z"></path>
@@ -222,11 +227,11 @@ export class Message extends Model {
                                         </button>
                                     </div>
                                     <div class="_1_Gu6">
-                                        <div class="message-audio-duration">0:05</div>
+                                        <div class="message-audio-duration">0:00</div>
                                         <div class="_1sLSi">
                                             <span class="nDKsM" style="width: 0%;"></span>
                                             <input type="range" min="0" max="100" class="_3geJ8" value="0">
-                                            <audio src="#" preload="auto"></audio>
+                                            <audio src="${this.content}" preload="auto"></audio>
                                         </div>
                                     </div>
                                 </div>
@@ -260,21 +265,71 @@ export class Message extends Model {
                         <div class="_27K_5">
                             <div class="_1DZAH" role="button">
                                 <span class="message-time">${Format.timeStampToTime(this.timeStamp)}</span>
-                                <div class="message-status">
-                                    
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
-
-                    <div class="_3S8Q-" role="button">
-                        <span data-icon="forward-chat">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" width="25" height="25">
-                                <path fill="#FFF" d="M14.2 9.5V6.1l5.9 5.9-5.9 6v-3.5c-4.2 0-7.2 1.4-9.3 4.3.8-4.2 3.4-8.4 9.3-9.3z"></path>
-                            </svg>
-                        </span>
-                    </div>
                 </div>`;
+
+                if(this.photo) {
+                    let img = div.querySelector('.message-photo');
+                    img.src = this.photo;
+                    img.show();
+                }
+
+                let audioEl = div.querySelector('audio');
+                let loadEl = div.querySelector('.audio-load');
+                let btnPlay = div.querySelector('.audio-play');
+                let btnPause = div.querySelector('.audio-pause');
+                let inputRange = div.querySelector('[type=range]');
+                let audioDuration = div.querySelector('.message-audio-duration');
+
+                audioEl.onloadeddata = e => {
+                    loadEl.hide();
+                    btnPlay.show();
+                }
+
+                audioEl.onplay = e => {
+                    btnPlay.hide();
+                    btnPause.show();
+                }
+                
+                audioEl.onpause = e => {
+                    audioDuration.innerHTML = Format.toTime(this.duration * 1000)
+                    btnPlay.show();
+                    btnPause.hide();
+                }
+
+                audioEl.onended = e => {
+                    audioEl.currentTime = 0;
+                }
+
+                audioEl.ontimeupdate = e => {
+                    btnPause.hide();
+                    btnPlay.hide();
+                    audioDuration.innerHTML = Format.toTime(audioEl.currentTime * 1000);
+                    inputRange.value = (audioEl.currentTime * 100) / this.duration;
+
+                    if(audioEl.paused) {
+                        btnPlay.show();
+                    } else {
+                        btnPause.show();
+                    }
+
+                }
+
+                btnPlay.on('click', e => {
+                    audioEl.play();
+                });
+
+                btnPause.on('click', e => {
+                    audioEl.pause();
+                });
+
+                inputRange.on('change', e => {
+                    audioEl.currentTime = (inputRange.value * this.duration) / 100;
+                });
+
                 break;
             default:
                 div.innerHTML = `<div class="font-style _3DFk6  tail">
@@ -342,11 +397,31 @@ export class Message extends Model {
         return Message.send(chatId, from, 'contact', contact);
     }
 
+    static sendAudio(chatId, from, file, metadata, photo) {
+
+        return Message.send(chatId, from, 'audio', '').then(msgRef => {
+
+            Message.upload(from, file).then(downloadURL => {
+                setDoc(msgRef, {
+                    content: downloadURL,
+                    size: file.size,
+                    fileType: file.type,
+                    status: 'sent',
+                    photo,
+                    duration: metadata.duration,
+                }, { merge: true });
+
+            });
+
+        });
+
+    }
+
     static sendDocument(chatId, from, file, filePreview, pdfInfo) {
 
         Message.send(chatId, from, 'document', '').then(msgRef => {
             Message.upload(from, file).then((downloadFile) => {
-                if(filePreview) {
+                if (filePreview) {
                     Message.upload(from, filePreview).then(downloadPreview => {
                         setDoc(msgRef, {
                             content: downloadFile,
