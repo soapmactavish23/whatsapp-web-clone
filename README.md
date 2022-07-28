@@ -1,11 +1,67 @@
-# Projeto WhatsApp Clone
+![WhatsApp Clone](https://firebasestorage.googleapis.com/v0/b/hcode-com-br.appspot.com/o/whatsapp.jpg?alt=media&token=5fc78e3b-4871-424f-abfa-b765f2515d0c)
 
-[![Hcode Treinamentos](https://www.hcode.com.br/res/img/hcode-200x100.png)](https://www.hcode.com.br)
+<h4 align="center"> 
+	🚧 WhatsApp Web Clone 🚀 Concluido...  🚧
+</h4>
 
 Projeto desenvolvido como exemplo do Curso Completo de JavaScript na Udemy.com.
 
-### Projeto
-![WhatsApp Clone](https://firebasestorage.googleapis.com/v0/b/hcode-com-br.appspot.com/o/whatsapp.jpg?alt=media&token=5fc78e3b-4871-424f-abfa-b765f2515d0c)
+## ✅ Funções
+
+- [x] Envio de mensagem em tempo real
+- [x] Envio de Emojis
+- [x] Enviar fotos do computador
+- [x] Tirar fotos com a webcam
+- [x] Enviar Documentos
+- [x] Enviar Audio
+- [x] Enviar contatos
+- [x] Editar Perfil
+- [x] Fazer login com o login do google   
+
+## 🛠 Tecnologias
+
+As seguintes ferramentas foram usadas na construção do projeto:
+
+- <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" heigth="20" width="20"/> [JavaScript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)
+- <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" heigth="20" width="20"/> [HTML5](https://developer.mozilla.org/pt-BR/docs/Web/HTML)
+
+## 🖥️ Plataforma adotada
+
+  - WEB
+
+## 📸 Screenshot
+
+<img src="./prints/login_google.png" width="500"/>
+<img src="./prints/print1.jpg" width="500"/>
+<img src="./prints/print2.jpg" width="500"/>
+<img src="./prints/print3.jpg" width="500"/>
+<img src="./prints/print4.jpg" width="500"/>
+<img src="./prints/print5.jpg" width="500"/>
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm start
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Run your tests
+```
+npm run test
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
 
 ### Recursos Usados
 
