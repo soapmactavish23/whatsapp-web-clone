@@ -8,7 +8,12 @@ module.exports = {
     "eslint:recommended",
     "google",
   ],
+  ignorePatterns: [
+    "index.js",
+  ],
   rules: {
-    quotes: ["error", "double"],
+    "quotes": ["error", "double"],
+    "max-len": ["error", {"code": 255}],
+    "linebreak-style": ["error", process.platform === "win32" ? "windows" : "unix"],
   },
 };
