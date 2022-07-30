@@ -17,6 +17,7 @@ Projeto desenvolvido como exemplo do Curso Completo de JavaScript na Udemy.com.
 - [x] Enviar contatos
 - [x] Editar Perfil
 - [x] Fazer login com o login do google   
+- [x] Notificação de mensagem
 
 ## 🛠 Tecnologias
 
