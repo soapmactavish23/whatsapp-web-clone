@@ -54,7 +54,7 @@ exports.saveLastMessage = functions.firestore.document('/chats/{chatId}/messages
                 db.collection('users').doc(userTo).collection('contacts').doc(encode64(userFrom)).set({
                     lastMessage: messageDoc.content,
                     lastMessageTime: new Date()
-                }, { merge: true }).then(e => {
+                }, { merge: true }).then(e => { 
 
                     console.log('[FINISH]', new Date());
 
